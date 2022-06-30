@@ -1,0 +1,2 @@
+/* Escaped quotes */
+"some \"key\"" = "some \"value\"";

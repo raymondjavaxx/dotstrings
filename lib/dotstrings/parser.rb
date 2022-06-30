@@ -63,6 +63,9 @@ module DotStrings
             @current_key = @stack.join
             @stack.clear
           else
+            if ch == TOK_QUOTE && @stack.last == TOK_ESCAPE
+              @stack.pop
+            end
             @stack << ch
           end
         when STATE_KEY_END
@@ -88,6 +91,10 @@ module DotStrings
               value: @current_value
             )
           else
+            if ch == TOK_QUOTE && @stack.last == TOK_ESCAPE
+              @stack.pop
+            end
+
             @stack << ch
           end
         when STATE_VALUE_END
