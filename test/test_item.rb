@@ -10,6 +10,6 @@ class TestFile < MiniTest::Test
 
   def test_to_s_with_nil_comment
     item = DotStrings::Item.new(comment: nil, key: 'key 1', value: 'value 1')
-    assert_equal "\"key 1\" = \"value 1\";", item.to_s
+    assert_equal '"key 1" = "value 1";', item.to_s
   end
 end
