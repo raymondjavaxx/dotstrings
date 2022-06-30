@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module DotStrings
   class Parser
     # Special tokens
@@ -10,6 +11,7 @@ module DotStrings
     TOK_EQUALS = '='
     TOK_SEMICOLON = ';'
     TOK_NEW_LINE = "\n"
+    TOK_N = 'n'
 
     # States
     STATE_START = 0
@@ -27,6 +29,7 @@ module DotStrings
     def initialize
       @state = STATE_START
       @stack = []
+      @escaping = false
 
       @current_comment = nil
       @current_key = nil
@@ -58,13 +61,28 @@ module DotStrings
         when STATE_COMMENT_END
           @state = STATE_KEY if scan_character(ch, TOK_QUOTE)
         when STATE_KEY
-          if ch == TOK_QUOTE && @stack.last != TOK_ESCAPE
-            @state = STATE_KEY_END
-            @current_key = @stack.join
-            @stack.clear
+          if @escaping
+            @escaping = false
+            case ch
+            when TOK_QUOTE, TOK_ESCAPE
+              @stack << ch
+            when TOK_N
+              @stack << TOK_NEW_LINE
+            else
+              raise ParsingError,
+                    "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+            end
           else
-            @stack.pop if ch == TOK_QUOTE && @stack.last == TOK_ESCAPE
-            @stack << ch
+            case ch
+            when TOK_ESCAPE
+              @escaping = true
+            when TOK_QUOTE
+              @state = STATE_KEY_END
+              @current_key = @stack.join
+              @stack.clear
+            else
+              @stack << ch
+            end
           end
         when STATE_KEY_END
           @state = STATE_VALUE_SEPARATOR if scan_character(ch, TOK_EQUALS)
@@ -78,20 +96,34 @@ module DotStrings
             end
           end
         when STATE_VALUE
-          if ch == TOK_QUOTE && @stack.last != TOK_ESCAPE
-            @state = STATE_VALUE_END
-            @current_value = @stack.join
-            @stack.clear
-
-            @items << Item.new(
-              comment: @current_comment,
-              key: @current_key,
-              value: @current_value
-            )
+          if @escaping
+            @escaping = false
+            case ch
+            when TOK_QUOTE, TOK_ESCAPE
+              @stack << ch
+            when TOK_N
+              @stack << TOK_NEW_LINE
+            else
+              raise ParsingError,
+                    "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+            end
           else
-            @stack.pop if ch == TOK_QUOTE && @stack.last == TOK_ESCAPE
+            case ch
+            when TOK_ESCAPE
+              @escaping = true
+            when TOK_QUOTE
+              @state = STATE_VALUE_END
+              @current_value = @stack.join
+              @stack.clear
 
-            @stack << ch
+              @items << Item.new(
+                comment: @current_comment,
+                key: @current_key,
+                value: @current_value
+              )
+            else
+              @stack << ch
+            end
           end
         when STATE_VALUE_END
           @state = STATE_START if scan_character(ch, TOK_SEMICOLON)
@@ -147,3 +179,4 @@ module DotStrings
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
