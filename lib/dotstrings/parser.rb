@@ -39,6 +39,7 @@ module DotStrings
       @column = 1
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
     def <<(data)
       data.each_char do |ch|
         case @state
@@ -49,7 +50,7 @@ module DotStrings
         when STATE_COMMENT
           if ch == TOK_SLASH && @stack.last == TOK_ASTERISK
             @state = STATE_COMMENT_END
-            @current_comment = @stack.slice(0, @stack.length - 1).join('').strip
+            @current_comment = @stack.slice(0, @stack.length - 1).join.strip
             @stack.clear
           else
             @stack << ch
@@ -59,7 +60,7 @@ module DotStrings
         when STATE_KEY
           if ch == TOK_QUOTE && @stack.last != TOK_ESCAPE
             @state = STATE_KEY_END
-            @current_key = @stack.join('')
+            @current_key = @stack.join
             @stack.clear
           else
             @stack << ch
@@ -71,13 +72,14 @@ module DotStrings
             @state = STATE_VALUE
           else
             unless ch.strip.empty?
-              raise ParsingError, "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+              raise ParsingError,
+                    "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
             end
           end
         when STATE_VALUE
           if ch == TOK_QUOTE && @stack.last != TOK_ESCAPE
             @state = STATE_VALUE_END
-            @current_value = @stack.join('')
+            @current_value = @stack.join
             @stack.clear
 
             @items << Item.new(
@@ -95,6 +97,7 @@ module DotStrings
         update_position(ch)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
 
     private
 

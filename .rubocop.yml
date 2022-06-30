@@ -8,7 +8,7 @@ AllCops:
 
 Style/StringLiterals:
   Enabled: true
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 Metrics/ClassLength:
   Enabled: true

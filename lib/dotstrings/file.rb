@@ -20,7 +20,7 @@ module DotStrings
     end
 
     def keys
-      @items.map { |item| item.key }
+      @items.map(&:key)
     end
 
     def <<(item)
