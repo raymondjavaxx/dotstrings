@@ -1,0 +1,8 @@
+/* Single line comment */
+"key 1" = "value 1";
+
+/* Multi line
+comment */
+"key 2" = "value 2";
+
+"key 3" = "value 3";

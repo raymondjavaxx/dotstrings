@@ -130,7 +130,7 @@ module DotStrings
         @state = STATE_COMMENT_START
         reset_state
       when TOK_QUOTE
-        @state = STATE_KEY_start
+        @state = STATE_KEY
         reset_state
       else
         raise ParsingError, "Unexpected character '#{ch}' at #{@position}" unless ch.strip.empty?

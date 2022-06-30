@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
+require 'dotstrings/parser'
+require 'dotstrings/errors'
+require 'dotstrings/item'
+
 module DotStrings
   class File
+    attr_reader :items
+
     def initialize(items)
       @items = items
     end
@@ -10,11 +16,11 @@ module DotStrings
       parser = Parser.new
       parser << io.read
 
-      Document.new(parser.items)
+      File.new(parser.items)
     end
 
     def self.parse_file(path)
-      File.open(path, 'r') do |file|
+      ::File.open(path, 'r') do |file|
         parse(file)
       end
     end
