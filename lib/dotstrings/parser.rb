@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module DotStrings
-  # rubocop:disable Metrics/ClassLength
   class Parser
     # Special tokens
     TOK_SLASH = '/'
@@ -56,7 +55,7 @@ module DotStrings
           when TOK_ASTERISK
             @state = STATE_MULTILINE_COMMENT
           else
-            raise ParsingError, "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+            raise_error("Unexpected character '#{ch}'")
           end
         when STATE_COMMENT
           if ch == TOK_NEW_LINE
@@ -75,22 +74,19 @@ module DotStrings
             @stack << ch
           end
         when STATE_COMMENT_END
-          @state = STATE_KEY if scan_character(ch, TOK_QUOTE)
+          @state = STATE_KEY if ch == TOK_QUOTE
         when STATE_KEY
           parse_string(ch) do |key|
             @current_key = key
             @state = STATE_KEY_END
           end
         when STATE_KEY_END
-          @state = STATE_VALUE_SEPARATOR if scan_character(ch, TOK_EQUALS)
+          @state = STATE_VALUE_SEPARATOR if ch == TOK_EQUALS
         when STATE_VALUE_SEPARATOR
           if ch == TOK_QUOTE
             @state = STATE_VALUE
           else
-            unless ch.strip.empty?
-              raise ParsingError,
-                    "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
-            end
+            raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
           end
         when STATE_VALUE
           parse_string(ch) do |value|
@@ -104,7 +100,7 @@ module DotStrings
             )
           end
         when STATE_VALUE_END
-          @state = STATE_START if scan_character(ch, TOK_SEMICOLON)
+          @state = STATE_START if ch == TOK_SEMICOLON
         end
 
         update_position(ch)
@@ -113,6 +109,10 @@ module DotStrings
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
 
     private
+
+    def raise_error(message)
+      raise ParsingError, "#{message} at line #{@line}, column #{@column} (offset: #{@offset})"
+    end
 
     def parse_string(ch, &block)
       if @escaping
@@ -123,8 +123,7 @@ module DotStrings
         when TOK_N
           @stack << TOK_NEW_LINE
         else
-          raise ParsingError,
-                "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+          raise_error("Unexpected character '#{ch}'")
         end
       else
         case ch
@@ -150,18 +149,6 @@ module DotStrings
       end
     end
 
-    def scan_character(ch, expected, options = {})
-      return true if ch == expected
-
-      strict = options[:strict] || false
-
-      if strict || !ch.strip.empty?
-        raise ParsingError, "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
-      end
-
-      false
-    end
-
     def start_value(ch)
       case ch
       when TOK_SLASH
@@ -181,5 +168,4 @@ module DotStrings
       @current_value = nil
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
