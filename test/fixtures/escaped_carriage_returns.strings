@@ -1,0 +1,2 @@
+/* Escaped carriage returns */
+"some\rkey" = "some\rvalue";

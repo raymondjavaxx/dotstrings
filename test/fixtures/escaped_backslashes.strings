@@ -1,0 +1,2 @@
+/* Escaped carriage backslashes */
+"some\\key" = "some\\value";

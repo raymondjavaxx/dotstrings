@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module DotStrings
+  # rubocop:disable Metrics/ClassLength
   class Parser
     # Special tokens
     TOK_SLASH = '/'
@@ -11,6 +12,9 @@ module DotStrings
     TOK_SEMICOLON = ';'
     TOK_NEW_LINE = "\n"
     TOK_N = 'n'
+    TOK_R = 'r'
+    TOK_T = 't'
+    TOK_ZERO = '0'
 
     # States
     STATE_START = 0
@@ -117,14 +121,7 @@ module DotStrings
     def parse_string(ch, &block)
       if @escaping
         @escaping = false
-        case ch
-        when TOK_QUOTE, TOK_ESCAPE
-          @stack << ch
-        when TOK_N
-          @stack << TOK_NEW_LINE
-        else
-          raise_error("Unexpected character '#{ch}'")
-        end
+        parse_escaped_character(ch, &block)
       else
         case ch
         when TOK_ESCAPE
@@ -135,6 +132,23 @@ module DotStrings
         else
           @stack << ch
         end
+      end
+    end
+
+    def parse_escaped_character(ch)
+      case ch
+      when TOK_QUOTE, TOK_ESCAPE
+        @stack << ch
+      when TOK_N
+        @stack << "\n"
+      when TOK_R
+        @stack << "\r"
+      when TOK_T
+        @stack << "\t"
+      when TOK_ZERO
+        @stack << "\0"
+      else
+        raise_error("Unexpected character '#{ch}'")
       end
     end
 
@@ -168,4 +182,5 @@ module DotStrings
       @current_value = nil
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

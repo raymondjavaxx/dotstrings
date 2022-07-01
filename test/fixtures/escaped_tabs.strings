@@ -1,0 +1,2 @@
+/* Escaped tabs */
+"some\tkey" = "some\tvalue";

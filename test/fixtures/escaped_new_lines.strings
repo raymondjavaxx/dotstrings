@@ -1,0 +1,2 @@
+/* Escaped new lines */
+"some\nkey" = "some\nvalue";
