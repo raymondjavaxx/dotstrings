@@ -1,4 +1,4 @@
-/* Single line comment */
+// Single line comment
 "key 1" = "value 1";
 
 /* Multi line

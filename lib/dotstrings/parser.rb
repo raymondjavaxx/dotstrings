@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module DotStrings
+  # rubocop:disable Metrics/ClassLength
   class Parser
     # Special tokens
     TOK_SLASH = '/'
@@ -16,12 +17,13 @@ module DotStrings
     STATE_START = 0
     STATE_COMMENT_START = 1
     STATE_COMMENT = 2
-    STATE_COMMENT_END = 3
-    STATE_KEY = 4
-    STATE_KEY_END = 5
-    STATE_VALUE_SEPARATOR = 6
-    STATE_VALUE = 7
-    STATE_VALUE_END = 8
+    STATE_MULTILINE_COMMENT = 3
+    STATE_COMMENT_END = 4
+    STATE_KEY = 5
+    STATE_KEY_END = 6
+    STATE_VALUE_SEPARATOR = 7
+    STATE_VALUE = 8
+    STATE_VALUE_END = 9
 
     attr_reader :items
 
@@ -48,8 +50,23 @@ module DotStrings
         when STATE_START
           start_value(ch)
         when STATE_COMMENT_START
-          @state = STATE_COMMENT if scan_character(ch, TOK_ASTERISK, strict: true)
+          case ch
+          when TOK_SLASH
+            @state = STATE_COMMENT
+          when TOK_ASTERISK
+            @state = STATE_MULTILINE_COMMENT
+          else
+            raise ParsingError, "Unexpected character '#{ch}' at line #{@line}, column #{@column} (offset: #{@offset})"
+          end
         when STATE_COMMENT
+          if ch == TOK_NEW_LINE
+            @state = STATE_COMMENT_END
+            @current_comment = @stack.join.strip
+            @stack.clear
+          else
+            @stack << ch
+          end
+        when STATE_MULTILINE_COMMENT
           if ch == TOK_SLASH && @stack.last == TOK_ASTERISK
             @state = STATE_COMMENT_END
             @current_comment = @stack.slice(0, @stack.length - 1).join.strip
@@ -164,4 +181,5 @@ module DotStrings
       @current_value = nil
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
