@@ -72,4 +72,18 @@ class TestFile < MiniTest::Test
     assert_equal '$', file.items[0].key
     assert_equal '⚡👻', file.items[0].value
   end
+
+  def test_delete
+    items = [
+      DotStrings::Item.new(key: 'key 1', value: 'value 1'),
+      DotStrings::Item.new(key: 'key 2', value: 'value 2'),
+      DotStrings::Item.new(key: 'key 3', value: 'value 3')
+    ]
+
+    file = DotStrings::File.new(items)
+
+    file.delete('key 2')
+    assert_equal 2, file.items.size
+    assert_equal ['key 1', 'key 3'], file.keys
+  end
 end

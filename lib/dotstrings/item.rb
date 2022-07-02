@@ -4,7 +4,7 @@ module DotStrings
   class Item
     attr_reader :comment, :key, :value
 
-    def initialize(comment:, key:, value:)
+    def initialize(key:, value:, comment: nil)
       @comment = comment
       @key = key
       @value = value

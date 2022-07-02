@@ -40,6 +40,10 @@ module DotStrings
       self << item
     end
 
+    def delete(key)
+      @items.delete_if { |item| item.key == key }
+    end
+
     def to_s
       result = []
 
