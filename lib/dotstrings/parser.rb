@@ -120,6 +120,8 @@ module DotStrings
         when STATE_UNICODE
           parse_unicode(ch) do |unicode_ch|
             @buffer << unicode_ch
+            # Restore state
+            @state = @temp_state
           end
         when STATE_UNICODE_SURROGATE
           if ch == TOK_ESCAPE
@@ -184,7 +186,7 @@ module DotStrings
       end
     end
 
-    # rubocop:disable Metrics/PerceivedComplexity, Style/GuardClause
+    # rubocop:disable Style/GuardClause
     def parse_unicode(ch, &block)
       raise_error("Unexpected character '#{ch}'") unless ch =~ TOK_HEX_DIGIT
 
@@ -196,22 +198,18 @@ module DotStrings
         if codepoint >= 0xD800 && codepoint <= 0xDBFF
           @high_surrogate = codepoint
           @state = STATE_UNICODE_SURROGATE
+        elsif codepoint >= 0xDC00 && codepoint <= 0xDFFF
+          character = ((@high_surrogate - 0xD800) * 0x400) + (codepoint - 0xDC00) + 0x10000
+          block.call(character.chr('UTF-8'))
         else
-          if codepoint >= 0xDC00 && codepoint <= 0xDFFF
-            character = (@high_surrogate - 0xD800) * 0x400 + (codepoint - 0xDC00) + 0x10000
-            block.call(character.chr('UTF-8'))
-          else
-            block.call(codepoint.chr('UTF-8'))
-          end
-          # Restore state
-          @state = @temp_state
+          block.call(codepoint.chr('UTF-8'))
         end
 
         # Clear buffer after codepoint is parsed
         @unicode_buffer.clear
       end
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Style/GuardClause
+    # rubocop:enable Style/GuardClause
 
     def update_position(ch)
       @offset += 1
