@@ -51,11 +51,15 @@ module DotStrings
       @current_key = nil
       @current_value = nil
 
-      @items = []
+      @item_block = nil
 
       @offset = 0
       @line = 1
       @column = 1
+    end
+
+    def on_item(&block)
+      @item_block = block
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
@@ -109,11 +113,11 @@ module DotStrings
             @current_value = value
             @state = STATE_VALUE_END
 
-            @items << Item.new(
+            @item_block&.call(Item.new(
               comment: @current_comment,
               key: @current_key,
               value: @current_value
-            )
+            ))
           end
         when STATE_VALUE_END
           @state = STATE_START if ch == TOK_SEMICOLON

@@ -13,10 +13,13 @@ module DotStrings
     end
 
     def self.parse(io)
+      items = []
+
       parser = Parser.new
+      parser.on_item { |item| items << item }
       parser << io.read
 
-      File.new(parser.items)
+      File.new(items)
     end
 
     def self.parse_file(path)
