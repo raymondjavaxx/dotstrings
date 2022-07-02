@@ -64,4 +64,12 @@ class TestFile < MiniTest::Test
     assert_equal 'some\\key', file.items[0].key
     assert_equal 'some\\value', file.items[0].value
   end
+
+  def test_can_parse_files_with_escaped_unicode
+    file = DotStrings::File.parse_file('test/fixtures/escaped_unicode.strings')
+
+    assert_equal 1, file.items.size
+    assert_equal '$', file.items[0].key
+    assert_equal '⚡', file.items[0].value
+  end
 end

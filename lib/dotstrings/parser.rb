@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dotstrings/errors'
+
 module DotStrings
   # rubocop:disable Metrics/ClassLength
   class Parser
@@ -14,25 +16,32 @@ module DotStrings
     TOK_N = 'n'
     TOK_R = 'r'
     TOK_T = 't'
+    TOK_CAP_U = 'U'
     TOK_ZERO = '0'
+    TOX_HEX_DIGIT = /[0-9a-fA-F]/.freeze
 
     # States
-    STATE_START = 0
-    STATE_COMMENT_START = 1
-    STATE_COMMENT = 2
+    STATE_START             = 0
+    STATE_COMMENT_START     = 1
+    STATE_COMMENT           = 2
     STATE_MULTILINE_COMMENT = 3
-    STATE_COMMENT_END = 4
-    STATE_KEY = 5
-    STATE_KEY_END = 6
-    STATE_VALUE_SEPARATOR = 7
-    STATE_VALUE = 8
-    STATE_VALUE_END = 9
+    STATE_COMMENT_END       = 4
+    STATE_KEY               = 5
+    STATE_KEY_END           = 6
+    STATE_VALUE_SEPARATOR   = 7
+    STATE_VALUE             = 8
+    STATE_VALUE_END         = 9
+    STATE_UNICODE           = 10
 
     attr_reader :items
 
     def initialize
       @state = STATE_START
-      @stack = []
+      @temp_state = nil
+
+      @buffer = []
+      @unicode_buffer = []
+
       @escaping = false
 
       @current_comment = nil
@@ -64,18 +73,18 @@ module DotStrings
         when STATE_COMMENT
           if ch == TOK_NEW_LINE
             @state = STATE_COMMENT_END
-            @current_comment = @stack.join.strip
-            @stack.clear
+            @current_comment = @buffer.join.strip
+            @buffer.clear
           else
-            @stack << ch
+            @buffer << ch
           end
         when STATE_MULTILINE_COMMENT
-          if ch == TOK_SLASH && @stack.last == TOK_ASTERISK
+          if ch == TOK_SLASH && @buffer.last == TOK_ASTERISK
             @state = STATE_COMMENT_END
-            @current_comment = @stack.slice(0, @stack.length - 1).join.strip
-            @stack.clear
+            @current_comment = @buffer.slice(0, @buffer.length - 1).join.strip
+            @buffer.clear
           else
-            @stack << ch
+            @buffer << ch
           end
         when STATE_COMMENT_END
           @state = STATE_KEY if ch == TOK_QUOTE
@@ -105,6 +114,10 @@ module DotStrings
           end
         when STATE_VALUE_END
           @state = STATE_START if ch == TOK_SEMICOLON
+        when STATE_UNICODE
+          parse_unicode(ch) do |unicode_ch|
+            @buffer << unicode_ch
+          end
         end
 
         update_position(ch)
@@ -120,33 +133,52 @@ module DotStrings
 
     def parse_string(ch, &block)
       if @escaping
-        @escaping = false
         parse_escaped_character(ch, &block)
       else
         case ch
         when TOK_ESCAPE
           @escaping = true
         when TOK_QUOTE
-          block.call(@stack.join)
-          @stack.clear
+          block.call(@buffer.join)
+          @buffer.clear
         else
-          @stack << ch
+          @buffer << ch
         end
       end
     end
 
     def parse_escaped_character(ch)
+      @escaping = false
+
       case ch
       when TOK_QUOTE, TOK_ESCAPE
-        @stack << ch
+        @buffer << ch
       when TOK_N
-        @stack << "\n"
+        @buffer << "\n"
       when TOK_R
-        @stack << "\r"
+        @buffer << "\r"
       when TOK_T
-        @stack << "\t"
+        @buffer << "\t"
+      when TOK_CAP_U
+        @temp_state = @state
+        @state = STATE_UNICODE
       when TOK_ZERO
-        @stack << "\0"
+        @buffer << "\0"
+      else
+        raise_error("Unexpected character '#{ch}'")
+      end
+    end
+
+    def parse_unicode(ch, &block)      
+      case ch
+      when TOX_HEX_DIGIT
+        @unicode_buffer << ch
+        if @unicode_buffer.length == 4
+          block.call(@unicode_buffer.join.hex.chr('UTF-8'))
+          @unicode_buffer.clear
+          # Restore state
+          @state = @temp_state
+        end
       else
         raise_error("Unexpected character '#{ch}'")
       end

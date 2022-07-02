@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DotString
+module DotStrings
   class ParsingError < RuntimeError
   end
 end
