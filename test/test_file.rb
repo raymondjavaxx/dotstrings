@@ -70,6 +70,6 @@ class TestFile < MiniTest::Test
 
     assert_equal 1, file.items.size
     assert_equal '$', file.items[0].key
-    assert_equal '⚡', file.items[0].value
+    assert_equal '⚡👻', file.items[0].value
   end
 end

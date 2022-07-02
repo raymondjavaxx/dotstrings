@@ -6,32 +6,34 @@ module DotStrings
   # rubocop:disable Metrics/ClassLength
   class Parser
     # Special tokens
-    TOK_SLASH = '/'
-    TOK_ASTERISK = '*'
-    TOK_QUOTE = '"'
-    TOK_ESCAPE = '\\'
-    TOK_EQUALS = '='
+    TOK_SLASH     = '/'
+    TOK_ASTERISK  = '*'
+    TOK_QUOTE     = '"'
+    TOK_ESCAPE    = '\\'
+    TOK_EQUALS    = '='
     TOK_SEMICOLON = ';'
-    TOK_NEW_LINE = "\n"
-    TOK_N = 'n'
-    TOK_R = 'r'
-    TOK_T = 't'
-    TOK_CAP_U = 'U'
-    TOK_ZERO = '0'
-    TOX_HEX_DIGIT = /[0-9a-fA-F]/.freeze
+    TOK_NEW_LINE  = "\n"
+    TOK_N         = 'n'
+    TOK_R         = 'r'
+    TOK_T         = 't'
+    TOK_CAP_U     = 'U'
+    TOK_ZERO      = '0'
+    TOK_HEX_DIGIT = /[0-9a-fA-F]/.freeze
 
     # States
-    STATE_START             = 0
-    STATE_COMMENT_START     = 1
-    STATE_COMMENT           = 2
-    STATE_MULTILINE_COMMENT = 3
-    STATE_COMMENT_END       = 4
-    STATE_KEY               = 5
-    STATE_KEY_END           = 6
-    STATE_VALUE_SEPARATOR   = 7
-    STATE_VALUE             = 8
-    STATE_VALUE_END         = 9
-    STATE_UNICODE           = 10
+    STATE_START               = 0
+    STATE_COMMENT_START       = 1
+    STATE_COMMENT             = 2
+    STATE_MULTILINE_COMMENT   = 3
+    STATE_COMMENT_END         = 4
+    STATE_KEY                 = 5
+    STATE_KEY_END             = 6
+    STATE_VALUE_SEPARATOR     = 7
+    STATE_VALUE               = 8
+    STATE_VALUE_END           = 9
+    STATE_UNICODE             = 10
+    STATE_UNICODE_SURROGATE   = 11
+    STATE_UNICODE_SURROGATE_U = 12
 
     attr_reader :items
 
@@ -41,6 +43,7 @@ module DotStrings
 
       @buffer = []
       @unicode_buffer = []
+      @high_surrogate = nil
 
       @escaping = false
 
@@ -118,6 +121,18 @@ module DotStrings
           parse_unicode(ch) do |unicode_ch|
             @buffer << unicode_ch
           end
+        when STATE_UNICODE_SURROGATE
+          if ch == TOK_ESCAPE
+            @state = STATE_UNICODE_SURROGATE_U
+          else
+            raise_error("Unexpected character '#{ch}'")
+          end
+        when STATE_UNICODE_SURROGATE_U
+          if ch == TOK_CAP_U
+            @state = STATE_UNICODE
+          else
+            raise_error("Unexpected character '#{ch}'")
+          end
         end
 
         update_position(ch)
@@ -169,20 +184,34 @@ module DotStrings
       end
     end
 
-    def parse_unicode(ch, &block)      
-      case ch
-      when TOX_HEX_DIGIT
-        @unicode_buffer << ch
-        if @unicode_buffer.length == 4
-          block.call(@unicode_buffer.join.hex.chr('UTF-8'))
-          @unicode_buffer.clear
+    # rubocop:disable Metrics/PerceivedComplexity, Style/GuardClause
+    def parse_unicode(ch, &block)
+      raise_error("Unexpected character '#{ch}'") unless ch =~ TOK_HEX_DIGIT
+
+      @unicode_buffer << ch
+
+      if @unicode_buffer.length == 4
+        codepoint = @unicode_buffer.join.hex
+
+        if codepoint >= 0xD800 && codepoint <= 0xDBFF
+          @high_surrogate = codepoint
+          @state = STATE_UNICODE_SURROGATE
+        else
+          if codepoint >= 0xDC00 && codepoint <= 0xDFFF
+            character = (@high_surrogate - 0xD800) * 0x400 + (codepoint - 0xDC00) + 0x10000
+            block.call(character.chr('UTF-8'))
+          else
+            block.call(codepoint.chr('UTF-8'))
+          end
           # Restore state
           @state = @temp_state
         end
-      else
-        raise_error("Unexpected character '#{ch}'")
+
+        # Clear buffer after codepoint is parsed
+        @unicode_buffer.clear
       end
     end
+    # rubocop:enable Metrics/PerceivedComplexity, Style/GuardClause
 
     def update_position(ch)
       @offset += 1

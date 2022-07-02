@@ -1,2 +1,2 @@
-/* Unicode characters */
-"\U0024" = "\U26A1";
+/* Unicode characters. Key is a dollar sign, value is: ⚡👻 */
+"\U0024" = "\U26A1\UD83D\UDC7B";
