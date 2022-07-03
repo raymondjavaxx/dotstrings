@@ -49,6 +49,6 @@ file << DotStrings::Item(
 
 ### Saving a file
 
-```swift
-File.write('en-US/Localizable.strings, file.to_s)
+```ruby
+File.write('en-US/Localizable.strings', file.to_s)
 ```
