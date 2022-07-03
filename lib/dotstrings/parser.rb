@@ -6,19 +6,20 @@ module DotStrings
   # rubocop:disable Metrics/ClassLength
   class Parser
     # Special tokens
-    TOK_SLASH     = '/'
-    TOK_ASTERISK  = '*'
-    TOK_QUOTE     = '"'
-    TOK_ESCAPE    = '\\'
-    TOK_EQUALS    = '='
-    TOK_SEMICOLON = ';'
-    TOK_NEW_LINE  = "\n"
-    TOK_N         = 'n'
-    TOK_R         = 'r'
-    TOK_T         = 't'
-    TOK_CAP_U     = 'U'
-    TOK_ZERO      = '0'
-    TOK_HEX_DIGIT = /[0-9a-fA-F]/.freeze
+    TOK_SLASH        = '/'
+    TOK_ASTERISK     = '*'
+    TOK_QUOTE        = '"'
+    TOK_SINGLE_QUOTE = "'"
+    TOK_BACKSLASH    = '\\'
+    TOK_EQUALS       = '='
+    TOK_SEMICOLON    = ';'
+    TOK_NEW_LINE     = "\n"
+    TOK_N            = 'n'
+    TOK_R            = 'r'
+    TOK_T            = 't'
+    TOK_CAP_U        = 'U'
+    TOK_ZERO         = '0'
+    TOK_HEX_DIGIT    = /[0-9a-fA-F]/.freeze
 
     # States
     STATE_START               = 0
@@ -128,7 +129,7 @@ module DotStrings
             @state = @temp_state
           end
         when STATE_UNICODE_SURROGATE
-          if ch == TOK_ESCAPE
+          if ch == TOK_BACKSLASH
             @state = STATE_UNICODE_SURROGATE_U
           else
             raise_error("Unexpected character '#{ch}'")
@@ -157,7 +158,7 @@ module DotStrings
         parse_escaped_character(ch, &block)
       else
         case ch
-        when TOK_ESCAPE
+        when TOK_BACKSLASH
           @escaping = true
         when TOK_QUOTE
           block.call(@buffer.join)
@@ -172,7 +173,7 @@ module DotStrings
       @escaping = false
 
       case ch
-      when TOK_QUOTE, TOK_ESCAPE
+      when TOK_QUOTE, TOK_SINGLE_QUOTE, TOK_BACKSLASH
         @buffer << ch
       when TOK_N
         @buffer << "\n"
