@@ -17,7 +17,7 @@ module DotStrings
 
       parser = Parser.new
       parser.on_item { |item| items << item }
-      parser << io.read
+      parser << normalize_encoding(io.read)
 
       File.new(items)
     end
@@ -58,5 +58,28 @@ module DotStrings
 
       result.join("\n")
     end
+
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    def self.normalize_encoding(str)
+      if str.bytesize >= 3 && str.getbyte(0) == 0xEF && str.getbyte(1) == 0xBB && str.getbyte(2) == 0xBF
+        # UTF-8 BOM
+        str.byteslice(3, str.bytesize - 3)
+      elsif str.bytesize >= 2 && str.getbyte(0) == 0xFE && str.getbyte(1) == 0xFF
+        # UTF-16 (BE) BOM
+        converter = Encoding::Converter.new('UTF-16be', 'UTF-8')
+        str = converter.convert(str)
+        str.byteslice(3, str.bytesize - 3)
+      elsif str.bytesize >= 2 && str.getbyte(0) == 0xFF && str.getbyte(1) == 0xFE
+        # UTF-16 (LE) BOM
+        converter = Encoding::Converter.new('UTF-16le', 'UTF-8')
+        str = converter.convert(str)
+        str.byteslice(3, str.bytesize - 3)
+      else
+        str.force_encoding('UTF-8')
+      end
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+    private_class_method :normalize_encoding
   end
 end

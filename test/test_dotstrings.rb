@@ -72,4 +72,28 @@ class TestDotStrings < MiniTest::Test
     assert_equal '$', file.items[0].key
     assert_equal '⚡👻', file.items[0].value
   end
+
+  def test_can_parse_utf16le_files_with_bom
+    file = DotStrings.parse_file('test/fixtures/utf16le_bom.strings')
+
+    assert_equal 1, file.items.size
+    assert_equal 'key', file.items[0].key
+    assert_equal 'value', file.items[0].value
+  end
+
+  def test_can_parse_utf16be_files_with_bom
+    file = DotStrings.parse_file('test/fixtures/utf16be_bom.strings')
+
+    assert_equal 1, file.items.size
+    assert_equal 'key', file.items[0].key
+    assert_equal 'value', file.items[0].value
+  end
+
+  def test_can_parse_utf8_files_with_bom
+    file = DotStrings.parse_file('test/fixtures/utf8_bom.strings')
+
+    assert_equal 1, file.items.size
+    assert_equal 'key', file.items[0].key
+    assert_equal 'value', file.items[0].value
+  end
 end

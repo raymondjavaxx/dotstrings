@@ -235,7 +235,7 @@ module DotStrings
         @state = STATE_KEY
         reset_state
       else
-        raise ParsingError, "Unexpected character '#{ch}' at #{@position}" unless ch.strip.empty?
+        raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
       end
     end
 
