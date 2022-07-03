@@ -8,7 +8,7 @@ module DotStrings
   class File
     attr_reader :items
 
-    def initialize(items)
+    def initialize(items = [])
       @items = items
     end
 
@@ -30,6 +30,10 @@ module DotStrings
 
     def keys
       @items.map(&:key)
+    end
+
+    def [](key)
+      @items.find { |item| item.key == key }
     end
 
     def <<(item)
