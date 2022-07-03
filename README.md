@@ -2,9 +2,23 @@
 
 A parser for Apple *strings* files (`.strings`) written in Ruby.
 
+## Installing
+
+You can install DotStrings manually by running:
+
+```shell
+$ gem install dotstrings
+```
+
+Or by adding the following entry to your [Gemfile](https://guides.cocoapods.org/using/a-gemfile.html), then running `$ bundle install`.
+
+```ruby
+gem "dotstrings"
+```
+
 ## Usage
 
-You can load `.strings` files using using the `DotString.parse()` utility method. This method returns a `DotStrings::File` object or throw an exception if the file is invalid.
+You can load `.strings` files using the `DotString.parse()` utility method. This method returns a `DotStrings::File` object or raises an exception if the file is invalid.
 
 ```ruby
 file = DotStrings.parse_file('en-US/Localizable.strings')
