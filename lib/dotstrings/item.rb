@@ -24,14 +24,15 @@ module DotStrings
     def serialize_string(string)
       replacements = [
         ['"', '\\"'],
+        ["'", "\\'"],
         ["\t", '\t'],
         ["\n", '\n'],
         ["\r", '\r'],
-        ["\0", '\\\0']
+        ["\0", '\\0']
       ]
 
       replacements.each do |replacement|
-        string = string.gsub(replacement[0], replacement[1])
+        string = string.gsub(replacement[0]) { replacement[1] }
       end
 
       string
