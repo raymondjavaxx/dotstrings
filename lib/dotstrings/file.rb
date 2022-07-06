@@ -66,12 +66,12 @@ module DotStrings
         str.byteslice(3, str.bytesize - 3)
       elsif str.bytesize >= 2 && str.getbyte(0) == 0xFE && str.getbyte(1) == 0xFF
         # UTF-16 (BE) BOM
-        converter = Encoding::Converter.new('UTF-16be', 'UTF-8')
+        converter = Encoding::Converter.new('UTF-16BE', 'UTF-8')
         str = converter.convert(str)
         str.byteslice(3, str.bytesize - 3)
       elsif str.bytesize >= 2 && str.getbyte(0) == 0xFF && str.getbyte(1) == 0xFE
         # UTF-16 (LE) BOM
-        converter = Encoding::Converter.new('UTF-16le', 'UTF-8')
+        converter = Encoding::Converter.new('UTF-16LE', 'UTF-8')
         str = converter.convert(str)
         str.byteslice(3, str.bytesize - 3)
       else
