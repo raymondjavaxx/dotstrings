@@ -132,13 +132,13 @@ module DotStrings
           if ch == TOK_BACKSLASH
             @state = STATE_UNICODE_SURROGATE_U
           else
-            raise_error("Unexpected character '#{ch}'")
+            raise_error("Unexpected character '#{ch}', expecting another unicode codepoint")
           end
         when STATE_UNICODE_SURROGATE_U
           if ch == TOK_CAP_U
             @state = STATE_UNICODE
           else
-            raise_error("Unexpected character '#{ch}'")
+            raise_error("Unexpected character '#{ch}', expecting '#{TOK_CAP_U}'")
           end
         end
 
@@ -193,7 +193,7 @@ module DotStrings
 
     # rubocop:disable Style/GuardClause
     def parse_unicode(ch, &block)
-      raise_error("Unexpected character '#{ch}'") unless ch =~ TOK_HEX_DIGIT
+      raise_error("Unexpected character '#{ch}', expecting a hex digit") unless ch =~ TOK_HEX_DIGIT
 
       @unicode_buffer << ch
 
