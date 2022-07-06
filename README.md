@@ -56,7 +56,7 @@ file.delete('key 1')
 ```ruby
 file << DotStrings::Item(
   comment: 'Title for the cancel button',
-  key: 'button.cancel.title'
+  key: 'button.cancel.title',
   value: 'Cancel'
 )
 ```
