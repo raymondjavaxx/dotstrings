@@ -1,6 +1,12 @@
 # DotStrings
 
-A parser for Apple *strings* files (`.strings`) written in Ruby.
+A parser for Apple *strings* files (`.strings`) written in Ruby. Some of the features of DotStrings include:
+
+* A fast and memory-efficient streaming parser.
+* Support for multiline (`/* ... */`) comments as well as single-line comments (`// ...`).
+* An API for creating strings files programmatically.
+* Handles Unicode and escaped characters.
+* Helpful error messages: know which line and column fail to parse and why.
 
 ## Installing
 
