@@ -10,6 +10,10 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
 
+Layout/FirstHashElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
 Metrics/ClassLength:
   Enabled: true
   Max: 150

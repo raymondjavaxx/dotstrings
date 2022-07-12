@@ -48,11 +48,11 @@ module DotStrings
       @items.delete_if { |item| item.key == key }
     end
 
-    def to_s
+    def to_s(escape_single_quotes: false)
       result = []
 
       @items.each do |item|
-        result << item.to_s
+        result << item.to_s(escape_single_quotes: escape_single_quotes)
         result << ''
       end
 

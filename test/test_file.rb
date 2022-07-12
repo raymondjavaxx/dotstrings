@@ -58,9 +58,24 @@ class TestFile < MiniTest::Test
       "key 3" = "👻";
 
       /* Comment 4 */
-      "\"\'\t\n\r\0" = "\"\'\t\n\r\0";
+      "\"'\t\n\r\0" = "\"'\t\n\r\0";
     END_OF_DOCUMENT
 
     assert_equal expected, file.to_s
+  end
+
+  def test_to_string_can_escape_single_quotes
+    items = [
+      DotStrings::Item.new(comment: 'Comment', key: "key'", value: "value'")
+    ]
+
+    file = DotStrings::File.new(items)
+
+    expected = <<~'END_OF_DOCUMENT'
+      /* Comment */
+      "key\'" = "value\'";
+    END_OF_DOCUMENT
+
+    assert_equal expected, file.to_s(escape_single_quotes: true)
   end
 end
