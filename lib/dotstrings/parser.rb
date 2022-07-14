@@ -95,7 +95,11 @@ module DotStrings
             @buffer << ch
           end
         when STATE_COMMENT_END
-          @state = STATE_KEY if ch == TOK_QUOTE
+          if ch == TOK_QUOTE
+            @state = STATE_KEY
+          else
+            raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
+          end
         when STATE_KEY
           parse_string(ch) do |key|
             @current_key = key
