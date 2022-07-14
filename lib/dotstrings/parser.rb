@@ -98,7 +98,7 @@ module DotStrings
           if ch == TOK_QUOTE
             @state = STATE_KEY
           else
-            raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
+            raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
           end
         when STATE_KEY
           parse_string(ch) do |key|
@@ -106,12 +106,16 @@ module DotStrings
             @state = STATE_KEY_END
           end
         when STATE_KEY_END
-          @state = STATE_VALUE_SEPARATOR if ch == TOK_EQUALS
+          if ch == TOK_EQUALS
+            @state = STATE_VALUE_SEPARATOR
+          else
+            raise_error("Unexpected character '#{ch}', expecting '#{TOK_EQUALS}'") unless whitespace?(ch)
+          end
         when STATE_VALUE_SEPARATOR
           if ch == TOK_QUOTE
             @state = STATE_VALUE
           else
-            raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
+            raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
           end
         when STATE_VALUE
           parse_string(ch) do |value|
@@ -125,7 +129,11 @@ module DotStrings
             ))
           end
         when STATE_VALUE_END
-          @state = STATE_START if ch == TOK_SEMICOLON
+          if ch == TOK_SEMICOLON
+            @state = STATE_START
+          else
+            raise_error("Unexpected character '#{ch}', expecting '#{TOK_SEMICOLON}'") unless whitespace?(ch)
+          end
         when STATE_UNICODE
           parse_unicode(ch) do |unicode_ch|
             @buffer << unicode_ch
@@ -240,7 +248,7 @@ module DotStrings
         @state = STATE_KEY
         reset_state
       else
-        raise_error("Unexpected character '#{ch}'") unless ch.strip.empty?
+        raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
       end
     end
 
@@ -248,6 +256,10 @@ module DotStrings
       @current_comment = nil
       @current_key = nil
       @current_value = nil
+    end
+
+    def whitespace?(ch)
+      ch.strip.empty?
     end
   end
   # rubocop:enable Metrics/ClassLength
