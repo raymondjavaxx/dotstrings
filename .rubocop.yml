@@ -14,6 +14,10 @@ Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
 Metrics/ClassLength:
   Enabled: true
   Max: 150

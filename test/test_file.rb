@@ -38,14 +38,12 @@ class TestFile < MiniTest::Test
   end
 
   def test_to_string
-    items = [
+    file = DotStrings::File.new([
       DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),
       DotStrings::Item.new(comment: 'Comment 2', key: 'key 2', value: 'value 2'),
       DotStrings::Item.new(comment: 'Comment 3', key: 'key 3', value: '👻'),
       DotStrings::Item.new(comment: 'Comment 4', key: "\"'\t\n\r\0", value: "\"'\t\n\r\0")
-    ]
-
-    file = DotStrings::File.new(items)
+    ])
 
     expected = <<~'END_OF_DOCUMENT'
       /* Comment 1 */
@@ -62,6 +60,21 @@ class TestFile < MiniTest::Test
     END_OF_DOCUMENT
 
     assert_equal expected, file.to_s
+  end
+
+  def test_to_string_no_comments
+    file = DotStrings::File.new([
+      DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),
+      DotStrings::Item.new(comment: 'Comment 2', key: 'key 2', value: 'value 2')
+    ])
+
+    expected = <<~'END_OF_DOCUMENT'
+      "key 1" = "value 1";
+
+      "key 2" = "value 2";
+    END_OF_DOCUMENT
+
+    assert_equal expected, file.to_s(comments: false)
   end
 
   def test_to_string_can_escape_single_quotes

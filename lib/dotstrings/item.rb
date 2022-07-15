@@ -10,10 +10,10 @@ module DotStrings
       @value = value
     end
 
-    def to_s(escape_single_quotes: false)
+    def to_s(escape_single_quotes: false, include_comment: true)
       result = []
 
-      result << "/* #{comment} */" unless comment.nil?
+      result << "/* #{comment} */" unless comment.nil? || !include_comment
       result << format('"%<key>s" = "%<value>s";', {
         key: serialize_string(key, escape_single_quotes: escape_single_quotes),
         value: serialize_string(value, escape_single_quotes: escape_single_quotes)
