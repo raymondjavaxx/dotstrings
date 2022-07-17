@@ -11,7 +11,7 @@
 
 ## [v0.1.0] - 2022-07-06
 ### Added
-* Initial release
+* Initial release.
 
 [v0.2.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.2.0
 [v0.1.1]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.1.1
