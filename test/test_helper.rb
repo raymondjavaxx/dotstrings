@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-gem 'minitest'
+require 'simplecov'
+SimpleCov.start
 
+require 'minitest'
 require 'minitest/pride'
 require 'minitest/autorun'
 

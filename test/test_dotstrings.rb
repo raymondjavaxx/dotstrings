@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'helper'
+require_relative 'test_helper'
 
 class TestDotStrings < MiniTest::Test
   def test_parse_can_parse_valid_files
