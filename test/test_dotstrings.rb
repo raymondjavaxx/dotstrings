@@ -82,16 +82,21 @@ class TestDotStrings < MiniTest::Test
   end
 
   def test_raises_error_when_bad_surrogate_pair_is_found
-    test_cases = [
-      'escaped_unicode~bad_surrogate_order.strings',
-      'escaped_unicode~duplicated_high_surrogate.strings',
-      'escaped_unicode~non_surrogate_after_high_surrogate.strings'
-    ]
+    # rubocop:disable Layout/LineLength
+    test_cases = {
+      'escaped_unicode~bad_surrogate_order.strings' => 'Found a low surrogate code point before a high surrogate at line 1, column 15 (offset: 14)',
+      'escaped_unicode~duplicated_high_surrogate.strings' => 'Found a high surrogate code point after another high surrogate at line 1, column 21 (offset: 20)',
+      'escaped_unicode~incomplete_surrogate_pair.strings' => 'Unexpected character \'"\', expecting another unicode codepoint at line 1, column 16 (offset: 15)',
+      'escaped_unicode~non_surrogate_after_high_surrogate.strings' => 'Invalid unicode codepoint \'\U26A1\' after a high surrogate code point at line 1, column 21 (offset: 20)'
+    }
+    # rubocop:enable Layout/LineLength
 
-    test_cases.each do |filename|
-      assert_raises DotStrings::ParsingError do
+    test_cases.each do |filename, error_message|
+      error = assert_raises DotStrings::ParsingError do
         DotStrings.parse_file("test/fixtures/#{filename}")
       end
+
+      assert_equal error_message, error.message
     end
   end
 
