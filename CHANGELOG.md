@@ -1,5 +1,9 @@
 # Changelog
 
+## [vX.Y.Z] - XXXX-XX-XX
+### Changed
+* Improved unicode code point parsing and validation.
+
 ## [v0.2.0] - 2022-07-17
 ### Changed
 * Made some state transitions more strict.
