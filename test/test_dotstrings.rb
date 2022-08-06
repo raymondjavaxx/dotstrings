@@ -82,8 +82,16 @@ class TestDotStrings < MiniTest::Test
   end
 
   def test_raises_error_when_bad_surrogate_pair_is_found
-    assert_raises DotStrings::ParsingError do
-      DotStrings.parse_file('test/fixtures/escaped_unicode~bad_surrogate_pair.strings')
+    test_cases = [
+      'escaped_unicode~bad_surrogate_order.strings',
+      'escaped_unicode~duplicated_high_surrogate.strings',
+      'escaped_unicode~non_surrogate_after_high_surrogate.strings'
+    ]
+
+    test_cases.each do |filename|
+      assert_raises DotStrings::ParsingError do
+        DotStrings.parse_file("test/fixtures/#{filename}")
+      end
     end
   end
 

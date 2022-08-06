@@ -217,7 +217,7 @@ module DotStrings
       if codepoint >= 0xD800 && codepoint <= 0xDBFF
         unless @high_surrogate.nil?
           raise_error(
-            'Found a high surrogate code point after another high surrogate code point'
+            'Found a high surrogate code point after another high surrogate'
           )
         end
 
@@ -226,7 +226,7 @@ module DotStrings
       elsif codepoint >= 0xDC00 && codepoint <= 0xDFFF
         if @high_surrogate.nil?
           raise_error(
-            'Found a low surrogate code point before a high surrogate code point'
+            'Found a low surrogate code point before a high surrogate'
           )
         end
 
@@ -237,7 +237,7 @@ module DotStrings
       else
         unless @high_surrogate.nil?
           raise_error(
-            "Invalid unicode codepoint '#{codepoint.hex}' after a high surrogate code point"
+            "Invalid unicode codepoint '\\U#{codepoint.to_s(16).upcase}' after a high surrogate code point"
           )
         end
 
