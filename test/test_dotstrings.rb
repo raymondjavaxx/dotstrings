@@ -81,6 +81,12 @@ class TestDotStrings < MiniTest::Test
     assert_equal '⚡👻', file.items[0].value
   end
 
+  def test_raises_error_when_bad_surrogate_pair_is_found
+    assert_raises DotStrings::ParsingError do
+      DotStrings.parse_file('test/fixtures/escaped_unicode~bad_surrogate_pair.strings')
+    end
+  end
+
   def test_can_parse_utf16le_files_with_bom
     file = DotStrings.parse_file('test/fixtures/utf16le_bom.strings')
 

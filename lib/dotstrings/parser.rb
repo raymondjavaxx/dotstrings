@@ -203,30 +203,51 @@ module DotStrings
       end
     end
 
-    # rubocop:disable Style/GuardClause
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def parse_unicode(ch, &block)
       raise_error("Unexpected character '#{ch}', expecting a hex digit") unless ch =~ TOK_HEX_DIGIT
 
       @unicode_buffer << ch
 
-      if @unicode_buffer.length == 4
-        codepoint = @unicode_buffer.join.hex
+      # Check if we have enough digits to form a codepoint.
+      return if @unicode_buffer.length < 4
 
-        if codepoint >= 0xD800 && codepoint <= 0xDBFF
-          @high_surrogate = codepoint
-          @state = STATE_UNICODE_SURROGATE
-        elsif codepoint >= 0xDC00 && codepoint <= 0xDFFF
-          character = ((@high_surrogate - 0xD800) * 0x400) + (codepoint - 0xDC00) + 0x10000
-          block.call(character.chr('UTF-8'))
-        else
-          block.call(codepoint.chr('UTF-8'))
+      codepoint = @unicode_buffer.join.hex
+
+      if codepoint >= 0xD800 && codepoint <= 0xDBFF
+        unless @high_surrogate.nil?
+          raise_error(
+            'Found a high surrogate code point after another high surrogate code point'
+          )
         end
 
-        # Clear buffer after codepoint is parsed
-        @unicode_buffer.clear
+        @high_surrogate = codepoint
+        @state = STATE_UNICODE_SURROGATE
+      elsif codepoint >= 0xDC00 && codepoint <= 0xDFFF
+        if @high_surrogate.nil?
+          raise_error(
+            'Found a low surrogate code point before a high surrogate code point'
+          )
+        end
+
+        character = ((@high_surrogate - 0xD800) * 0x400) + (codepoint - 0xDC00) + 0x10000
+        @high_surrogate = nil
+
+        block.call(character.chr('UTF-8'))
+      else
+        unless @high_surrogate.nil?
+          raise_error(
+            "Invalid unicode codepoint '#{codepoint.hex}' after a high surrogate code point"
+          )
+        end
+
+        block.call(codepoint.chr('UTF-8'))
       end
+
+      # Clear buffer after codepoint is parsed
+      @unicode_buffer.clear
     end
-    # rubocop:enable Style/GuardClause
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     def update_position(ch)
       @offset += 1
