@@ -41,7 +41,7 @@ module DotStrings
     # Parses a file from the given IO object.
     #
     # @example
-    #   io = Zlib::GzipReader.new('path/to/en.lproj/Localizable.strings.gz')
+    #   io = Zlib::GzipReader.open('path/to/en.lproj/Localizable.strings.gz')
     #   file = DotStrings::File.parse(io)
     #
     # @param io [IO] The IO object to parse.
