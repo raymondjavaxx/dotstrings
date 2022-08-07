@@ -1,6 +1,6 @@
 # Changelog
 
-## [vX.Y.Z] - XXXX-XX-XX
+## [v0.3.0] - XXXX-XX-XX
 ### Changed
 * Improved unicode code point parsing and validation.
 * Added `DotStrings::File#sort`, `DotStrings::File#sort!`, and `DotStrings::File#delete_if` methods.
