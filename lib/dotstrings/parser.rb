@@ -4,6 +4,9 @@ require 'dotstrings/errors'
 
 module DotStrings
   # rubocop:disable Metrics/ClassLength
+
+  ##
+  # Parser for .strings files.
   class Parser
     # Special tokens
     TOK_SLASH        = '/'
@@ -36,8 +39,6 @@ module DotStrings
     STATE_UNICODE_SURROGATE   = 11
     STATE_UNICODE_SURROGATE_U = 12
 
-    attr_reader :items
-
     def initialize
       @state = STATE_START
       @temp_state = nil
@@ -59,11 +60,16 @@ module DotStrings
       @column = 1
     end
 
+    ##
+    # Specifies a block to be called when a new item is parsed.
     def on_item(&block)
       @item_block = block
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
+
+    ##
+    # Feeds data to the parser.
     def <<(data)
       data.each_char do |ch|
         case @state
@@ -157,6 +163,7 @@ module DotStrings
         update_position(ch)
       end
     end
+
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
 
     private

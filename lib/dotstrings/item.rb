@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module DotStrings
+  ##
+  # Represents a localized string item.
   class Item
     attr_reader :comment, :key, :value
 
@@ -10,6 +12,11 @@ module DotStrings
       @value = value
     end
 
+    ##
+    # Serializes the item to string.
+    #
+    # @param escape_single_quotes [Boolean] Whether to escape single quotes.
+    # @param include_comment [Boolean] Whether to include the comment.
     def to_s(escape_single_quotes: false, include_comment: true)
       result = []
 

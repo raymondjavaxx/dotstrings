@@ -5,23 +5,40 @@ require 'dotstrings/errors'
 require 'dotstrings/item'
 
 module DotStrings
+  ##
+  # Represents a .strings file.
+  #
+  # It provides methods to parse .strings, as well as methods for accessing and
+  # manipulating localized string items.
   class File
+    ##
+    # All items in the file.
     attr_reader :items
 
     def initialize(items = [])
       @items = items
     end
 
+    ##
+    # Returns a new File with the items sorted using the given comparator block.
+    #
+    # If no block is given, the items will be sorted by key.
     def sort(&block)
       new_file = dup
       new_file.sort!(&block)
     end
 
+    ##
+    # Sort the items using the given block.
+    #
+    # If no block is given, the items will be sorted by key.
     def sort!(&block)
       @items.sort!(&block || ->(a, b) { a.key <=> b.key })
       self
     end
 
+    ##
+    # Parses a file from the given IO object.
     def self.parse(io)
       items = []
 
@@ -32,28 +49,41 @@ module DotStrings
       File.new(items)
     end
 
+    ##
+    # Parses the file at the given path.
     def self.parse_file(path)
       ::File.open(path, 'r') do |file|
         parse(file)
       end
     end
 
+    ##
+    # Returns all keys in the file.
     def keys
       @items.map(&:key)
     end
 
+    ##
+    # Returns an item by key, if it exists, otherwise nil.
     def [](key)
       @items.find { |item| item.key == key }
     end
 
+    ##
+    # Appends an item to the file.
     def <<(item)
       @items << item
+      self
     end
 
+    ##
+    # Appends an item to the file.
     def append(item)
       self << item
     end
 
+    ##
+    # Deletes an item by key.
     def delete(key)
       @items.delete_if { |item| item.key == key }
     end
@@ -65,6 +95,11 @@ module DotStrings
       self
     end
 
+    ##
+    # Serializes the file to a string.
+    #
+    # @param escape_single_quotes [Boolean] whether to escape single quotes.
+    # @param comments [Boolean] whether to include comments.
     def to_s(escape_single_quotes: false, comments: true)
       result = []
 
