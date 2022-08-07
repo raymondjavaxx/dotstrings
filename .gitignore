@@ -1,3 +1,5 @@
 pkg
 .vscode
 coverage
+doc
+.yardoc

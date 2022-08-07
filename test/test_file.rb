@@ -28,6 +28,17 @@ class TestFile < MiniTest::Test
     assert_equal ['key 1', 'key 3'], file.keys
   end
 
+  def test_delete_if
+    file = DotStrings::File.new([
+      DotStrings::Item.new(key: 'key 1', value: 'value 1'),
+      DotStrings::Item.new(key: 'key 2', value: 'value 2'),
+      DotStrings::Item.new(key: 'key 3', value: 'value 3')
+    ])
+
+    file.delete_if { |item| item.key == 'key 2' }
+    assert_equal ['key 1', 'key 3'], file.keys
+  end
+
   def test_access_by_key
     items = [
       DotStrings::Item.new(key: 'key 1', value: 'value 1'),

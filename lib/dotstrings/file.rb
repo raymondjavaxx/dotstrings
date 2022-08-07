@@ -58,6 +58,13 @@ module DotStrings
       @items.delete_if { |item| item.key == key }
     end
 
+    ##
+    # Deletes all items for which the block returns true.
+    def delete_if(&block)
+      @items.delete_if(&block)
+      self
+    end
+
     def to_s(escape_single_quotes: false, comments: true)
       result = []
 
