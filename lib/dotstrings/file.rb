@@ -39,6 +39,14 @@ module DotStrings
 
     ##
     # Parses a file from the given IO object.
+    #
+    # @example
+    #   io = Zlib::GzipReader.new('path/to/en.lproj/Localizable.strings.gz')
+    #   file = DotStrings::File.parse(io)
+    #
+    # @param io [IO] The IO object to parse.
+    # @return [DotStrings::File] The parsed file.
+    # @raise [DotStrings::ParsingError] if the file could not be parsed.
     def self.parse(io)
       items = []
 
@@ -51,6 +59,13 @@ module DotStrings
 
     ##
     # Parses the file at the given path.
+    #
+    # @example
+    #   file = DotStrings::File.parse_file('path/to/en.lproj/Localizable.strings')
+    #
+    # @param path [String] The path to the file to parse.
+    # @return [DotStrings::File] The parsed file.
+    # @raise [DotStrings::ParsingError] if the file could not be parsed.
     def self.parse_file(path)
       ::File.open(path, 'r') do |file|
         parse(file)
@@ -65,12 +80,27 @@ module DotStrings
 
     ##
     # Returns an item by key, if it exists, otherwise nil.
+    #
+    # @example
+    #   item = file['button.title']
+    #   unless item.nil?
+    #     puts item.value # => 'Submit'
+    #   end
+    #
+    # @param key [String] The key of the item to return.
+    # @return [DotStrings::Item] The item, if it exists.
     def [](key)
       @items.find { |item| item.key == key }
     end
 
     ##
     # Appends an item to the file.
+    #
+    # @example
+    #   file << DotStrings::Item.new(key: 'button.title', value: 'Submit')
+    #
+    # @param item [DotStrings::Item] The item to append.
+    # @return [DotStrings::Item] The item that was appended.
     def <<(item)
       @items << item
       self
@@ -78,6 +108,9 @@ module DotStrings
 
     ##
     # Appends an item to the file.
+    #
+    # @example
+    #   file.append(DotStrings::Item.new(key: 'button.title', value: 'Submit'))
     def append(item)
       self << item
     end
@@ -90,6 +123,9 @@ module DotStrings
 
     ##
     # Deletes all items for which the block returns true.
+    #
+    # @example
+    #   file.delete_if { |item| item.key.start_with?('button.') }
     def delete_if(&block)
       @items.delete_if(&block)
       self

@@ -7,6 +7,7 @@ A parser for Apple *strings* files (`.strings`) written in Ruby. Some of the fea
 * An API for creating strings files programmatically.
 * Handles Unicode and escaped characters.
 * Helpful error messages: know which line and column fail to parse and why.
+* Well [tested](test) and [documented](https://www.rubydoc.info/gems/dotstrings/DotStrings).
 
 ## Installing
 
@@ -19,12 +20,12 @@ $ gem install dotstrings
 Or by adding the following entry to your [Gemfile](https://guides.cocoapods.org/using/a-gemfile.html), then running `$ bundle install`.
 
 ```ruby
-gem "dotstrings"
+gem 'dotstrings'
 ```
 
 ## Usage
 
-You can load `.strings` files using the `DotString.parse()` utility method. This method returns a `DotStrings::File` object or raises an exception if the file is invalid.
+You can load `.strings` files using the `DotString.parse()` utility method. This method returns a `DotStrings::File` object or raises an exception if the file cannot be parsed.
 
 ```ruby
 file = DotStrings.parse_file('en-US/Localizable.strings')
