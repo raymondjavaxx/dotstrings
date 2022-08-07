@@ -12,6 +12,16 @@ module DotStrings
       @items = items
     end
 
+    def sort(&block)
+      new_file = dup
+      new_file.sort!(&block)
+    end
+
+    def sort!(&block)
+      @items.sort!(&block || ->(a, b) { a.key <=> b.key })
+      self
+    end
+
     def self.parse(io)
       items = []
 

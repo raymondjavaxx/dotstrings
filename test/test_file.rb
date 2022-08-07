@@ -3,6 +3,17 @@
 require_relative 'test_helper'
 
 class TestFile < MiniTest::Test
+  def test_sort
+    file = DotStrings::File.new([
+      DotStrings::Item.new(key: 'key 3', value: 'value 3'),
+      DotStrings::Item.new(key: 'key 2', value: 'value 2'),
+      DotStrings::Item.new(key: 'key 1', value: 'value 1')
+    ])
+
+    sorted = file.sort
+    assert_equal ['key 1', 'key 2', 'key 3'], sorted.keys
+  end
+
   def test_delete
     items = [
       DotStrings::Item.new(key: 'key 1', value: 'value 1'),
