@@ -59,6 +59,55 @@ class TestFile < MiniTest::Test
     assert_equal 1, file.items.size
   end
 
+  def test_length
+    file = DotStrings::File.new([
+      DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),
+      DotStrings::Item.new(comment: 'Comment 2', key: 'key 2', value: 'value 2'),
+      DotStrings::Item.new(comment: 'Comment 3', key: 'key 3', value: 'value 3')
+    ])
+
+    assert_equal 3, file.length
+  end
+
+  def test_each
+    items = [
+      DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),
+      DotStrings::Item.new(comment: 'Comment 2', key: 'key 2', value: 'value 2'),
+      DotStrings::Item.new(comment: 'Comment 3', key: 'key 3', value: 'value 3')
+    ]
+
+    seen = []
+
+    file = DotStrings::File.new(items)
+    file.each do |item|
+      seen << item
+    end
+
+    assert_equal(items, seen)
+  end
+
+  def test_count_without_arguments
+    file = DotStrings::File.new([
+      DotStrings::Item.new(key: 'button.continue', value: 'Continue'),
+      DotStrings::Item.new(key: 'button.cancel', value: 'Cancel'),
+      DotStrings::Item.new(key: 'button.back', value: 'Back'),
+      DotStrings::Item.new(key: 'title.book', value: 'Book Appointment')
+    ])
+
+    assert_equal(4, file.count)
+  end
+
+  def test_count_with_block
+    file = DotStrings::File.new([
+      DotStrings::Item.new(key: 'button.continue', value: 'Continue'),
+      DotStrings::Item.new(key: 'button.cancel', value: 'Cancel'),
+      DotStrings::Item.new(key: 'button.back', value: 'Back'),
+      DotStrings::Item.new(key: 'title.book', value: 'Book Appointment')
+    ])
+
+    assert_equal(3, file.count { |item| item.key.start_with?('button.') })
+  end
+
   def test_to_string
     file = DotStrings::File.new([
       DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),

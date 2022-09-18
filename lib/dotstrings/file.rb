@@ -132,6 +132,37 @@ module DotStrings
     end
 
     ##
+    # Calls the given block once for each item in the file.
+    #
+    # @param block [Proc] The block to call.
+    # @example
+    #   file.each do |item|
+    #     puts "#{item.key} > #{item.value}"
+    #   end
+    def each(&block)
+      @items.each(&block)
+      self
+    end
+
+    ##
+    # Returns the number of items in the file.
+    def length
+      @items.length
+    end
+
+    ##
+    # Returns the number of items in the file.
+    #
+    # If a block is given, it will count the number of items for which the block returns true.
+    #
+    # @example
+    #   file.count # => 10
+    #   file.count { |item| item.key.start_with?('button.') } # => 3
+    def count(&block)
+      @items.count(&block)
+    end
+
+    ##
     # Serializes the file to a string.
     #
     # @param escape_single_quotes [Boolean] whether to escape single quotes.
