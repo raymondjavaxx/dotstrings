@@ -108,6 +108,14 @@ class TestFile < MiniTest::Test
     assert_equal(3, file.count { |item| item.key.start_with?('button.') })
   end
 
+  def test_empty
+    file = DotStrings::File.new
+    assert_empty file
+
+    file << DotStrings::Item.new(key: 'button.continue', value: 'Continue')
+    refute_empty file
+  end
+
   def test_to_string
     file = DotStrings::File.new([
       DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),

@@ -163,6 +163,12 @@ module DotStrings
     end
 
     ##
+    # Returns `true` if the file doen't contain any items.
+    def empty?
+      @items.empty?
+    end
+
+    ##
     # Serializes the file to a string.
     #
     # @param escape_single_quotes [Boolean] whether to escape single quotes.
