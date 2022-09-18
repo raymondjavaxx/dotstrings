@@ -3,7 +3,7 @@
 require_relative 'test_helper'
 
 class TestFile < MiniTest::Test
-  def test_equals
+  def test_equals_with_same_items
     item1 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 1')
     item2 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 1')
     assert_equal item1, item2

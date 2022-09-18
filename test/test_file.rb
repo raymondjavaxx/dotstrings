@@ -116,6 +116,26 @@ class TestFile < MiniTest::Test
     refute_empty file
   end
 
+  def test_equality
+    file1 = DotStrings::File.new([
+      DotStrings::Item.new(key: 'button.continue', value: 'Continue'),
+      DotStrings::Item.new(key: 'button.cancel', value: 'Cancel')
+    ])
+
+    file2 = DotStrings::File.new([
+      DotStrings::Item.new(key: 'button.continue', value: 'Continue'),
+      DotStrings::Item.new(key: 'button.cancel', value: 'Cancel')
+    ])
+
+    file3 = DotStrings::File.new([
+      DotStrings::Item.new(key: 'button.back', value: 'Back'),
+      DotStrings::Item.new(key: 'title.book', value: 'Book Appointment')
+    ])
+
+    assert_equal file1, file2
+    refute_equal file1, file3
+  end
+
   def test_to_string
     file = DotStrings::File.new([
       DotStrings::Item.new(comment: 'Comment 1', key: 'key 1', value: 'value 1'),

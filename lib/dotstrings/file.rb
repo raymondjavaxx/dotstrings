@@ -168,6 +168,14 @@ module DotStrings
       @items.empty?
     end
 
+    def ==(other)
+      eql?(other)
+    end
+
+    def eql?(other)
+      other.is_a?(self.class) && @items.eql?(other.items)
+    end
+
     ##
     # Serializes the file to a string.
     #
