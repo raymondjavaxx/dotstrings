@@ -1,6 +1,6 @@
 # Changelog
 
-## [vX.Y.Z] - YYYY-MM-DD
+## [v0.4.0] - 2022-09-18
 ### Added
 * Added `DotStrings::File#each`, `DotStrings::File#length`, `DotStrings::File#count`, and `DotStrings::File#empty?` methods.
 * Allow comparing `DotStrings::File` objects.
@@ -24,6 +24,7 @@
 ### Added
 * Initial release.
 
+[v0.4.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.4.0
 [v0.3.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.2.0
 [v0.1.1]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.1.1
