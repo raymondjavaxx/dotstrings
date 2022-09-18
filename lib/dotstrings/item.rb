@@ -12,6 +12,13 @@ module DotStrings
       @value = value
     end
 
+    def ==(other)
+      other.is_a?(Item) &&
+        comment == other.comment &&
+        key == other.key &&
+        value == other.value
+    end
+
     ##
     # Serializes the item to string.
     #
