@@ -10,9 +10,7 @@ Gem::Specification.new do |s|
   s.email = ['raymondjavaxx@gmail.com']
   s.homepage = 'https://github.com/raymondjavaxx/dotstrings'
   s.description = s.summary = 'Parse and create .strings files used in localization of iOS and macOS apps.'
-  s.files = `git ls-files`.split("\n")
-  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb']
   s.require_paths = ['lib']
   s.license = 'MIT'
 
