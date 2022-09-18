@@ -13,6 +13,10 @@ module DotStrings
     end
 
     def ==(other)
+      eql?(other)
+    end
+
+    def eql?(other)
       other.is_a?(Item) &&
         comment == other.comment &&
         key == other.key &&
