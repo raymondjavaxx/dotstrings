@@ -1,5 +1,10 @@
 # Changelog
 
+## [vX.Y.Z] - YYYY-MM-DD
+### Added
+* Added `DotStrings::File#each`, `DotStrings::File#length`, `DotStrings::File#count`, and `DotStrings::File#empty?` methods.
+* Allow comparing `DotStrings::File` objects.
+
 ## [v0.3.0] - 2022-08-07
 ### Changed
 * Improved unicode code point parsing and validation.
