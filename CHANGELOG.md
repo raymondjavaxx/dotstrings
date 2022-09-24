@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.0] - 2022-09-24
+* Added `strict` parameter to the parser to allow for more lenient parsing. This is useful in cases where we don't want the parser to raise an error when encountering multiple comments or escaped characters that don't need to be escaped.
+
 ## [v0.4.0] - 2022-09-18
 ### Added
 * Added `DotStrings::File#each`, `DotStrings::File#length`, `DotStrings::File#count`, and `DotStrings::File#empty?` methods.
@@ -24,6 +27,7 @@
 ### Added
 * Initial release.
 
+[v0.5.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.5.0
 [v0.4.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.4.0
 [v0.3.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/raymondjavaxx/dotstrings/releases/tag/v0.2.0

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dotstrings (0.4.0)
+    dotstrings (0.5.0)
 
 GEM
   remote: https://rubygems.org/
