@@ -33,6 +33,13 @@ class TestDotStrings < MiniTest::Test
     assert_equal 'some \'value\'', file.items[0].value
   end
 
+  def test_can_parse_file_in_lenient_mode
+    file = DotStrings.parse_file('test/fixtures/lenient.strings', mode: :lenient)
+    assert_equal 1, file.items.size
+    assert_equal 'some key', file.items[0].key
+    assert_equal 'some value', file.items[0].value
+  end
+
   def test_can_parse_file_with_escaped_tabs
     file = DotStrings.parse_file('test/fixtures/escaped_tabs.strings')
 

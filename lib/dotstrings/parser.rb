@@ -39,7 +39,10 @@ module DotStrings
     STATE_UNICODE_SURROGATE   = 11
     STATE_UNICODE_SURROGATE_U = 12
 
-    def initialize
+    def initialize(mode: :strict)
+      raise ArgumentError, 'Invalid mode' unless %i[strict lenient].include?(mode)
+
+      @mode = mode
       @state = STATE_START
       @temp_state = nil
 
@@ -101,11 +104,7 @@ module DotStrings
             @buffer << ch
           end
         when STATE_COMMENT_END
-          if ch == TOK_QUOTE
-            @state = STATE_KEY
-          else
-            raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
-          end
+          comment_end(ch)
         when STATE_KEY
           parse_string(ch) do |key|
             @current_key = key
@@ -188,6 +187,8 @@ module DotStrings
       end
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
+
     def parse_escaped_character(ch)
       @escaping = false
 
@@ -206,11 +207,15 @@ module DotStrings
       when TOK_ZERO
         @buffer << "\0"
       else
-        raise_error("Unexpected character '#{ch}'")
+        raise_error("Unexpected character '#{ch}'") if @mode == :strict
+        @buffer << ch
       end
     end
 
+    # rubocop:enable Metrics/CyclomaticComplexity
+
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
     def parse_unicode(ch, &block)
       raise_error("Unexpected character '#{ch}', expecting a hex digit") unless ch =~ TOK_HEX_DIGIT
 
@@ -267,16 +272,30 @@ module DotStrings
       end
     end
 
-    def start_value(ch)
+    def start_value(ch, resets: true)
       case ch
       when TOK_SLASH
         @state = STATE_COMMENT_START
-        reset_state
+        reset_state if resets
       when TOK_QUOTE
         @state = STATE_KEY
-        reset_state
+        reset_state if resets
       else
         raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
+      end
+    end
+
+    def comment_end(ch)
+      if @mode == :strict
+        # In strict mode, we expect a key to follow the comment.
+        if ch == TOK_QUOTE
+          @state = STATE_KEY
+        else
+          raise_error("Unexpected character '#{ch}'") unless whitespace?(ch)
+        end
+      else
+        # In lenient mode, we allow comments to be followed by anything.
+        start_value(ch, resets: false)
       end
     end
 

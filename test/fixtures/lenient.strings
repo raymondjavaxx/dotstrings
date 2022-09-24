@@ -1,0 +1,7 @@
+/*
+   On lenient parsing mode we accept comments
+   that are not tied to an item, like this header
+*/
+
+/* We also allow escaping arbitrary characters */
+"\s\o\m\e \k\e\y" = "\s\o\m\e \v\a\l\u\e";
