@@ -7,6 +7,9 @@ module DotStrings
 
   ##
   # Parser for .strings files.
+  #
+  # You can use this class directly, but it is recommended to use
+  # {File.parse} and {File.parse_file} wrappers instead.
   class Parser
     # Special tokens
     TOK_SLASH        = '/'
@@ -39,6 +42,10 @@ module DotStrings
     STATE_UNICODE_SURROGATE   = 11
     STATE_UNICODE_SURROGATE_U = 12
 
+    ##
+    # Returns a new Parser instance.
+    #
+    # @param strict [Boolean] Whether to parse in strict mode.
     def initialize(strict: true)
       @strict = strict
 

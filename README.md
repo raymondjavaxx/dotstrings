@@ -36,14 +36,30 @@ file.items.each do |item|
 end
 ```
 
-## Examples
+## Strict Mode
+By default the parser runs in *strict mode*. This means that it will raise a `DotStrings::ParsingError` if it encouters coments that are not tied to a key-value pair. For example, the following file will raise an error the first comment is not followed by a key-value pair:
 
-### Listing keys
+```
+/* Spanish localizations */
+
+/* Title for a button for accepting something */
+"Accept" = "Aceptar";
+```
+
+In strict mode, the parser will also raise an error if it encounters escaped characters that don't need to be escaped. For example, the following file will raise an error because the `?` character doesn't need to be escaped:
+
+```
+/* Confirmation message */
+"Are you sure\?" = "¿Estás seguro\?";
+```
+
+If you want to disable strict mode, you can pass `strict: false` to the `DotStrings.parse_file()` method. This will match the behavior of Apple's own parser which is more lenient.
 
 ```ruby
-puts file.keys
-# => ["key 1", "key 2", ...]
+file = DotStrings.parse_file('es-ES/Localizable.strings', strict: false)
 ```
+
+## Examples
 
 ### Accessing items by key
 
@@ -73,3 +89,5 @@ file << DotStrings::Item(
 ```ruby
 File.write('en-US/Localizable.strings', file.to_s)
 ```
+
+For more examples, consult the [documentation](https://www.rubydoc.info/gems/dotstrings/DotStrings) or the [test suite](test).
