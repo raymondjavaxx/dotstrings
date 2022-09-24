@@ -37,7 +37,8 @@ end
 ```
 
 ## Strict Mode
-By default the parser runs in *strict mode*. This means that it will raise a `DotStrings::ParsingError` if it encouters coments that are not tied to a key-value pair. For example, the following file will raise an error the first comment is not followed by a key-value pair:
+
+By default, the parser runs in *strict mode*. This means that it will raise a `DotStrings::ParsingError` if it encounters comments that are not tied to a key-value pair. For example, the following file will raise an error because the first comment is not followed by a key-value pair:
 
 ```
 /* Spanish localizations */
@@ -46,14 +47,14 @@ By default the parser runs in *strict mode*. This means that it will raise a `Do
 "Accept" = "Aceptar";
 ```
 
-In strict mode, the parser will also raise an error if it encounters escaped characters that don't need to be escaped. For example, the following file will raise an error because the `?` character doesn't need to be escaped:
+In *strict mode*, the parser will also raise an error if it encounters escaped characters that don't need to be escaped. For example, the following file will raise an error because the `?` character doesn't need to be escaped:
 
 ```
 /* Confirmation message */
 "Are you sure\?" = "¿Estás seguro\?";
 ```
 
-If you want to disable strict mode, you can pass `strict: false` to the `DotStrings.parse_file()` method. This will match the behavior of Apple's own parser which is more lenient.
+If you want to disable *strict mode*, you can pass `strict: false` to the `DotStrings.parse_file()` method. This will match the behavior of Apple's own parser, which is more lenient.
 
 ```ruby
 file = DotStrings.parse_file('es-ES/Localizable.strings', strict: false)
