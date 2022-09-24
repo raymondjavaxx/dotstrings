@@ -12,10 +12,10 @@ module DotStrings
   # This is a convenience method for {DotStrings::File.parse}.
   #
   # @param io [IO] The IO object to parse.
-  # @param mode [Symbol] The parsing mode to use.
+  # @param strict [Boolean] Whether to parse in strict mode.
   # @return [DotStrings::File] The parsed file.
-  def self.parse(io, mode: :strict)
-    File.parse(io, mode: mode)
+  def self.parse(io, strict: true)
+    File.parse(io, strict: strict)
   end
 
   ##
@@ -24,9 +24,9 @@ module DotStrings
   # This is a convenience method for {DotStrings::File.parse_file}.
   #
   # @param path [String] The path to the .strings file to parse.
-  # @param mode [Symbol] The parsing mode to use.
+  # @param strict [Boolean] Whether to parse in strict mode.
   # @return [DotStrings::File] The parsed file.
-  def self.parse_file(path, mode: :strict)
-    File.parse_file(path, mode: mode)
+  def self.parse_file(path, strict: true)
+    File.parse_file(path, strict: strict)
   end
 end

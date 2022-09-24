@@ -39,10 +39,9 @@ module DotStrings
     STATE_UNICODE_SURROGATE   = 11
     STATE_UNICODE_SURROGATE_U = 12
 
-    def initialize(mode: :strict)
-      raise ArgumentError, 'Invalid mode' unless %i[strict lenient].include?(mode)
+    def initialize(strict: true)
+      @strict = strict
 
-      @mode = mode
       @state = STATE_START
       @temp_state = nil
 
@@ -207,7 +206,7 @@ module DotStrings
       when TOK_ZERO
         @buffer << "\0"
       else
-        raise_error("Unexpected character '#{ch}'") if @mode == :strict
+        raise_error("Unexpected character '#{ch}'") if @strict
         @buffer << ch
       end
     end
@@ -286,7 +285,7 @@ module DotStrings
     end
 
     def comment_end(ch)
-      if @mode == :strict
+      if @strict
         # In strict mode, we expect a key to follow the comment.
         if ch == TOK_QUOTE
           @state = STATE_KEY

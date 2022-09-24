@@ -45,13 +45,13 @@ module DotStrings
     #   file = DotStrings::File.parse(io)
     #
     # @param io [IO] The IO object to parse.
-    # @param mode [Symbol] The parsing mode to use.
+    # @param strict [Boolean] Whether to parse in strict mode.
     # @return [DotStrings::File] The parsed file.
     # @raise [DotStrings::ParsingError] if the file could not be parsed.
-    def self.parse(io, mode: :strict)
+    def self.parse(io, strict: true)
       items = []
 
-      parser = Parser.new(mode: mode)
+      parser = Parser.new(strict: strict)
       parser.on_item { |item| items << item }
       parser << normalize_encoding(io.read)
 
@@ -65,12 +65,12 @@ module DotStrings
     #   file = DotStrings::File.parse_file('path/to/en.lproj/Localizable.strings')
     #
     # @param path [String] The path to the file to parse.
-    # @param mode [Symbol] The parsing mode to use.
+    # @param strict [Boolean] Whether to parse in strict mode.
     # @return [DotStrings::File] The parsed file.
     # @raise [DotStrings::ParsingError] if the file could not be parsed.
-    def self.parse_file(path, mode: :strict)
+    def self.parse_file(path, strict: true)
       ::File.open(path, 'r') do |file|
-        parse(file, mode: mode)
+        parse(file, strict: strict)
       end
     end
 
