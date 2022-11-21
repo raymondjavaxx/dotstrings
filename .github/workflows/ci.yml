@@ -31,10 +31,11 @@ jobs:
         run: bundle exec rake
       - name: Install
         run: bundle exec rake install
-      - name: Report test coverage to DeepSource
-        uses: deepsourcelabs/test-coverage-action@master
-        with:
-          key: ruby
-          coverage-file: coverage/.resultset.json
-          dsn: ${{ secrets.DEEPSOURCE_DSN }}
-          fail-ci-on-error: true
+      - name: Install DeepSource CLI
+        run: |
+          curl https://deepsource.io/cli | sh
+      - name: Report coverage to DeepSource
+        env:
+          DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+        run: |
+          ./bin/deepsource report --analyzer test-coverage --key ruby --value-file ./coverage/.resultset.json
