@@ -37,3 +37,4 @@ jobs:
           key: ruby
           coverage-file: coverage/.resultset.json
           dsn: ${{ secrets.DEEPSOURCE_DSN }}
+          fail-ci-on-error: true
