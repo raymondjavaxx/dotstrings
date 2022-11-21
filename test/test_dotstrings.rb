@@ -130,4 +130,18 @@ class TestDotStrings < MiniTest::Test
     assert_equal 'key', file.items[0].key
     assert_equal 'value', file.items[0].value
   end
+
+  def test_parse_from_io
+    io = File.open('test/fixtures/valid.strings')
+    file = DotStrings.parse(io)
+
+    assert_equal 3, file.items.size
+  end
+
+  def test_parse_from_io_in_lenient_mode
+    io = File.open('test/fixtures/lenient.strings')
+    file = DotStrings.parse(io, strict: false)
+
+    assert_equal 1, file.items.size
+  end
 end
