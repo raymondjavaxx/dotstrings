@@ -19,15 +19,21 @@ jobs:
           - "3.1"
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Lint
-      run: bundle exec rake rubocop
-    - name: Run tests
-      run: bundle exec rake
-    - name: Install
-      run: bundle exec rake install
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Lint
+        run: bundle exec rake rubocop
+      - name: Run tests
+        run: bundle exec rake
+      - name: Install
+        run: bundle exec rake install
+      - name: Report test coverage to DeepSource
+        uses: deepsourcelabs/test-coverage-action@master
+        with:
+          key: ruby
+          coverage-file: coverage/.resultset.json
+          dsn: ${{ secrets.DEEPSOURCE_DSN }}
