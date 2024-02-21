@@ -11,6 +11,7 @@ class TestFile < MiniTest::Test
     ])
 
     sorted = file.sort
+
     assert_equal ['key 1', 'key 2', 'key 3'], sorted.keys
   end
 
@@ -24,6 +25,7 @@ class TestFile < MiniTest::Test
     file = DotStrings::File.new(items)
 
     file.delete('key 2')
+
     assert_equal 2, file.items.size
     assert_equal ['key 1', 'key 3'], file.keys
   end
@@ -36,6 +38,7 @@ class TestFile < MiniTest::Test
     ])
 
     file.delete_if { |item| item.key == 'key 2' }
+
     assert_equal ['key 1', 'key 3'], file.keys
   end
 
@@ -56,6 +59,7 @@ class TestFile < MiniTest::Test
   def test_append
     file = DotStrings::File.new
     file.append(DotStrings::Item.new(key: 'key 1', value: 'value 1'))
+
     assert_equal 1, file.items.size
   end
 
@@ -110,9 +114,11 @@ class TestFile < MiniTest::Test
 
   def test_empty
     file = DotStrings::File.new
+
     assert_empty file
 
     file << DotStrings::Item.new(key: 'button.continue', value: 'Continue')
+
     refute_empty file
   end
 
@@ -167,7 +173,7 @@ class TestFile < MiniTest::Test
       DotStrings::Item.new(comment: 'Comment 2', key: 'key 2', value: 'value 2')
     ])
 
-    expected = <<~'END_OF_DOCUMENT'
+    expected = <<~END_OF_DOCUMENT
       "key 1" = "value 1";
 
       "key 2" = "value 2";
