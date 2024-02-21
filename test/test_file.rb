@@ -119,7 +119,7 @@ class TestFile < Minitest::Test
 
     file << DotStrings::Item.new(key: 'button.continue', value: 'Continue')
 
-    refute_empty file
+    refute_empty file # skipcq: RB-RL1045
   end
 
   def test_equality
@@ -139,7 +139,7 @@ class TestFile < Minitest::Test
     ])
 
     assert_equal file1, file2
-    refute_equal file1, file3
+    refute_equal file1, file3 # skipcq: RB-RL1045
   end
 
   def test_to_string

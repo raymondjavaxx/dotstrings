@@ -14,21 +14,21 @@ class TestFile < Minitest::Test
     item1 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 1')
     item2 = DotStrings::Item.new(comment: 'Comment 2', key: 'key 1', value: 'value 1')
 
-    refute_equal item1, item2
+    refute_equal item1, item2 # skipcq: RB-RL1045
   end
 
   def test_equals_with_different_key
     item1 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 1')
     item2 = DotStrings::Item.new(comment: 'Comment', key: 'key 2', value: 'value 1')
 
-    refute_equal item1, item2
+    refute_equal item1, item2 # skipcq: RB-RL1045
   end
 
   def test_equals_with_different_value
     item1 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 1')
     item2 = DotStrings::Item.new(comment: 'Comment', key: 'key 1', value: 'value 2')
 
-    refute_equal item1, item2
+    refute_equal item1, item2 # skipcq: RB-RL1045
   end
 
   def test_to_s
