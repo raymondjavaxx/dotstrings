@@ -2,7 +2,7 @@
 
 require_relative 'test_helper'
 
-class TestDotStrings < MiniTest::Test
+class TestDotStrings < Minitest::Test
   def test_parse_can_parse_valid_files
     file = DotStrings.parse_file('test/fixtures/valid.strings')
 

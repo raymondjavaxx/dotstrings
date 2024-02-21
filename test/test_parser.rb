@@ -2,7 +2,7 @@
 
 require_relative 'test_helper'
 
-class TestParser < MiniTest::Test
+class TestParser < Minitest::Test
   def test_handles_extraneous_characters_at_start_of_file
     parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do

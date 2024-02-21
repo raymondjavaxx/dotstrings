@@ -2,7 +2,7 @@
 
 require_relative 'test_helper'
 
-class TestFile < MiniTest::Test
+class TestFile < Minitest::Test
   def test_sort
     file = DotStrings::File.new([
       DotStrings::Item.new(key: 'key 3', value: 'value 3'),
