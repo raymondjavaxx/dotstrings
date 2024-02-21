@@ -3,6 +3,7 @@
 ## [v0.6.0] - 2024-02-21
 
 - Dropped support for Ruby 2.5.
+- Small performance improvements for unicode parsing.
 
 ## [v0.5.0] - 2022-09-24
 
