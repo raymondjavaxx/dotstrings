@@ -179,7 +179,7 @@ module DotStrings
 
     def parse_string(ch, &block)
       if @escaping
-        parse_escaped_character(ch, &block)
+        parse_escaped_character(ch)
       else
         case ch
         when TOK_BACKSLASH
