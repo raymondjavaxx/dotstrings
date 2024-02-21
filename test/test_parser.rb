@@ -47,4 +47,13 @@ class TestParser < Minitest::Test
 
     assert_equal "Unexpected character '$', expecting 'U' at line 1, column 17 (offset: 16)", error.message
   end
+
+  def test_raises_error_if_unicode_sequence_contains_invalid_characters
+    parser = DotStrings::Parser.new
+    error = assert_raises DotStrings::ParsingError do
+      parser << '"key" = "\UD83Z";'
+    end
+
+    assert_equal "Unexpected character 'Z', expecting a hex digit at line 1, column 15 (offset: 14)", error.message
+  end
 end
