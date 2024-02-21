@@ -39,3 +39,6 @@ Style/ParallelAssignment:
 
 Minitest/AssertInDelta:
   Enabled: false
+
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec
