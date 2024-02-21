@@ -2,10 +2,10 @@
 
 require_relative 'test_helper'
 
-class TestParser < MiniTest::Test
+class TestParser < Minitest::Test
   def test_handles_extraneous_characters_at_start_of_file
+    parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do
-      parser = DotStrings::Parser.new
       parser << '$'
     end
 
@@ -13,8 +13,8 @@ class TestParser < MiniTest::Test
   end
 
   def test_handles_malformed_comments
+    parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do
-      parser = DotStrings::Parser.new
       parser << '/@ test'
     end
 
@@ -22,8 +22,8 @@ class TestParser < MiniTest::Test
   end
 
   def test_raises_error_when_escaping_invalid_character
+    parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do
-      parser = DotStrings::Parser.new
       parser << '"\\z" = "value";'
     end
 
@@ -31,8 +31,8 @@ class TestParser < MiniTest::Test
   end
 
   def test_raises_error_when_items_are_not_separated_by_semicolon
+    parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do
-      parser = DotStrings::Parser.new
       parser << '"key_1" = "value_1" "key_2" = "value_2"'
     end
 
@@ -40,8 +40,8 @@ class TestParser < MiniTest::Test
   end
 
   def test_raises_error_if_low_surrogate_is_not_formatted_correctly
+    parser = DotStrings::Parser.new
     error = assert_raises DotStrings::ParsingError do
-      parser = DotStrings::Parser.new
       parser << '"key" = "\UD83D\$DC7B";'
     end
 
