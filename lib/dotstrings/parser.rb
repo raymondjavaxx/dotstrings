@@ -223,7 +223,7 @@ module DotStrings
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     def parse_unicode(ch, &block)
-      raise_error("Unexpected character '#{ch}', expecting a hex digit") unless ch =~ TOK_HEX_DIGIT
+      raise_error("Unexpected character '#{ch}', expecting a hex digit") unless TOK_HEX_DIGIT.match?(ch)
 
       @unicode_buffer << ch
 
