@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.6.0] - 2024-02-21
+## [v0.6.0] - 2024-02-27
 
 - Dropped support for Ruby 2.5.
 - Small performance improvements for unicode parsing.
