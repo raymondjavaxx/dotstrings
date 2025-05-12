@@ -54,6 +54,7 @@ GEM
     unicode-emoji (4.0.4)
 
 PLATFORMS
+  arm64-darwin-22
   ruby
 
 DEPENDENCIES
@@ -67,4 +68,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.2.18
+   2.6.8
