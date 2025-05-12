@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-minitest
 
@@ -42,3 +42,6 @@ Minitest/AssertInDelta:
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
+
+Style/MapIntoArray:
+  Enabled: false
