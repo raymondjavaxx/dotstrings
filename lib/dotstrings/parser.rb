@@ -25,7 +25,7 @@ module DotStrings
     TOK_T            = 't'
     TOK_CAP_U        = 'U'
     TOK_ZERO         = '0'
-    TOK_HEX_DIGIT    = /[0-9a-fA-F]/.freeze
+    TOK_HEX_DIGIT    = /[0-9a-fA-F]/
 
     # States
     STATE_START               = 0
@@ -232,7 +232,7 @@ module DotStrings
 
       codepoint = @unicode_buffer.join.hex
 
-      if codepoint >= 0xD800 && codepoint <= 0xDBFF
+      if codepoint.between?(0xD800, 0xDBFF)
         unless @high_surrogate.nil?
           raise_error(
             'Found a high surrogate code point after another high surrogate'
@@ -241,7 +241,7 @@ module DotStrings
 
         @high_surrogate = codepoint
         @state = STATE_UNICODE_SURROGATE
-      elsif codepoint >= 0xDC00 && codepoint <= 0xDFFF
+      elsif codepoint.between?(0xDC00, 0xDFFF)
         if @high_surrogate.nil?
           raise_error(
             'Found a low surrogate code point before a high surrogate'

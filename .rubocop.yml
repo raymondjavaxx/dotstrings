@@ -1,9 +1,9 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-minitest
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 3.0
   NewCops: enable
 
 Style/StringLiterals:
@@ -42,3 +42,6 @@ Minitest/AssertInDelta:
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
+
+Style/MapIntoArray:
+  Enabled: false

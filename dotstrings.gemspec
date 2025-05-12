@@ -15,13 +15,13 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'minitest', '~> 5.14'
+  s.add_development_dependency 'minitest', '~> 5.25'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rubocop', '~> 1.50.2'
-  s.add_development_dependency 'rubocop-minitest', '~> 0.30.0'
+  s.add_development_dependency 'rubocop', '~> 1.75'
+  s.add_development_dependency 'rubocop-minitest', '~> 0.38'
   s.add_development_dependency 'rubocop-rake'
   s.add_development_dependency 'simplecov'
 
-  s.required_ruby_version = '>= 2.6.0'
+  s.required_ruby_version = '>= 3.0.0'
   s.metadata['rubygems_mfa_required'] = 'true'
 end
