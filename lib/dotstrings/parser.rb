@@ -25,7 +25,7 @@ module DotStrings
     TOK_T            = 't'
     TOK_CAP_U        = 'U'
     TOK_ZERO         = '0'
-    TOK_HEX_DIGIT    = /[0-9a-fA-F]/.freeze
+    TOK_HEX_DIGIT    = /[0-9a-fA-F]/
 
     # States
     STATE_START               = 0
