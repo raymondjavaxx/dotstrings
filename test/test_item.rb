@@ -42,4 +42,16 @@ class TestFile < Minitest::Test
 
     assert_equal '"key 1" = "value 1";', item.to_s
   end
+
+  def test_to_s_escapes_backslashes
+    item = DotStrings::Item.new(comment: nil, key: 'some\\key', value: 'some\\value')
+
+    assert_equal '"some\\\\key" = "some\\\\value";', item.to_s
+  end
+
+  def test_to_s_escapes_backslashes_before_quotes
+    item = DotStrings::Item.new(comment: nil, key: 'some\"key', value: 'some\"value')
+
+    assert_equal '"some\\\\\\"key" = "some\\\\\\"value";', item.to_s
+  end
 end

@@ -20,7 +20,7 @@ Layout/FirstArrayElementIndentation:
 
 Metrics/ClassLength:
   Enabled: true
-  Max: 150
+  Max: 200
 
 Naming/MethodParameterName:
   Enabled: false

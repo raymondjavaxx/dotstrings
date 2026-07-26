@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'stringio'
 require_relative 'test_helper'
 
 class TestFile < Minitest::Test
@@ -195,5 +196,14 @@ class TestFile < Minitest::Test
     END_OF_DOCUMENT
 
     assert_equal expected, file.to_s(escape_single_quotes: true)
+  end
+
+  def test_to_string_round_trips_backslashes
+    input_path = File.expand_path('fixtures/escaped_backslashes.strings', __dir__)
+
+    parsed_file = File.open(input_path, 'r') { |f| DotStrings.parse(f) }
+    round_tripped_file = DotStrings.parse(StringIO.new(parsed_file.to_s))
+
+    assert_equal parsed_file.items, round_tripped_file.items
   end
 end

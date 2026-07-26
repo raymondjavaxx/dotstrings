@@ -44,6 +44,7 @@ module DotStrings
 
     def serialize_string(string, escape_single_quotes:)
       replacements = [
+        ['\\', '\\\\'],
         ['"', '\\"'],
         ["\t", '\t'],
         ["\n", '\n'],
