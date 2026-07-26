@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'stringio'
 require_relative 'test_helper'
 
 class TestDotStrings < Minitest::Test
@@ -144,5 +145,15 @@ class TestDotStrings < Minitest::Test
     file = DotStrings.parse(io, strict: false)
 
     assert_equal 1, file.items.size
+  end
+
+  def test_parse_from_io_raises_on_incomplete_input
+    io = StringIO.new('"key" = "value"')
+
+    error = assert_raises DotStrings::ParsingError do
+      DotStrings.parse(io)
+    end
+
+    assert_equal "Unexpected end of input, expecting ';' at line 1, column 16 (offset: 15)", error.message
   end
 end
