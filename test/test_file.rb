@@ -201,7 +201,7 @@ class TestFile < Minitest::Test
   def test_to_string_round_trips_backslashes
     input_path = File.expand_path('fixtures/escaped_backslashes.strings', __dir__)
 
-    parsed_file = DotStrings.parse(File.open(input_path))
+    parsed_file = File.open(input_path, 'r') { |f| DotStrings.parse(f) }
     round_tripped_file = DotStrings.parse(StringIO.new(parsed_file.to_s))
 
     assert_equal parsed_file.items, round_tripped_file.items
