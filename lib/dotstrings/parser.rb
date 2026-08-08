@@ -194,11 +194,9 @@ module DotStrings
         # No action needed, we are in a valid state.
       when STATE_COMMENT_START
         raise_error("Unexpected end of input after '#{TOK_SLASH}'")
-      when STATE_COMMENT
-        raise_error('Unexpected end of input inside comment')
       when STATE_MULTILINE_COMMENT
         raise_error('Unexpected end of input inside multiline comment')
-      when STATE_COMMENT_END
+      when STATE_COMMENT, STATE_COMMENT_END
         raise_error('Unexpected end of input after comment') if @strict
       when STATE_KEY
         raise_error('Unexpected end of input inside key')
