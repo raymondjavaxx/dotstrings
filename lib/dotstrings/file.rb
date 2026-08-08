@@ -54,6 +54,7 @@ module DotStrings
       parser = Parser.new(strict: strict)
       parser.on_item { |item| items << item }
       parser << normalize_encoding(io.read)
+      parser.finish!
 
       File.new(items)
     end

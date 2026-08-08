@@ -41,6 +41,7 @@ module DotStrings
     STATE_UNICODE             = 10
     STATE_UNICODE_SURROGATE   = 11
     STATE_UNICODE_SURROGATE_U = 12
+    STATE_FINISHED            = 13
 
     ##
     # Returns a new Parser instance.
@@ -163,6 +164,8 @@ module DotStrings
           else
             raise_error("Unexpected character '#{ch}', expecting '#{TOK_CAP_U}'")
           end
+        when STATE_FINISHED
+          raise_error("Unexpected character '#{ch}' after parsing is finished")
         end
 
         update_position(ch)
@@ -170,6 +173,57 @@ module DotStrings
     end
 
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/BlockLength
+
+    # rubocop:disable Metrics/CyclomaticComplexity
+
+    ##
+    # Finalizes parsing and validates that the parser did not stop in the
+    # middle of a token or escape sequence.
+    #
+    # Call this after all input has been fed through {#<<}. It raises
+    # {DotStrings::ParsingError} if the input ends while the parser is inside
+    # an unterminated comment, key, value, unicode escape, surrogate pair, or
+    # other incomplete construct.
+    #
+    # @raise [DotStrings::ParsingError] if the input ends in an invalid state.
+    def finish!
+      raise_error('Unexpected end of input after escape character') if @escaping
+
+      case @state
+      when STATE_START
+        # No action needed, we are in a valid state.
+      when STATE_COMMENT_START
+        raise_error("Unexpected end of input after '#{TOK_SLASH}'")
+      when STATE_MULTILINE_COMMENT
+        raise_error('Unexpected end of input inside multiline comment')
+      when STATE_COMMENT, STATE_COMMENT_END
+        raise_error('Unexpected end of input after comment') if @strict
+      when STATE_KEY
+        raise_error('Unexpected end of input inside key')
+      when STATE_KEY_END
+        raise_error("Unexpected end of input, expecting '#{TOK_EQUALS}'")
+      when STATE_VALUE_SEPARATOR
+        raise_error('Unexpected end of input before value')
+      when STATE_VALUE
+        raise_error('Unexpected end of input inside value')
+      when STATE_VALUE_END
+        raise_error("Unexpected end of input, expecting '#{TOK_SEMICOLON}'")
+      when STATE_UNICODE
+        raise_error('Unexpected end of input inside unicode escape')
+      when STATE_UNICODE_SURROGATE
+        raise_error('Unexpected end of input after high surrogate code point')
+      when STATE_UNICODE_SURROGATE_U
+        raise_error("Unexpected end of input, expecting '#{TOK_CAP_U}'")
+      when STATE_FINISHED
+        # No action needed, we are in a valid state.
+      else
+        raise_error('Unexpected end of input')
+      end
+
+      @state = STATE_FINISHED
+    end
+
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 
